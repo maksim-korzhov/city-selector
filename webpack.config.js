@@ -1,4 +1,5 @@
 const path = require('path');
+var StyleLintPlugin = require('stylelint-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
@@ -14,6 +15,12 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
+                enforce: 'pre',
+                loaders: ['eslint-loader']
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
                 loaders: ['babel-loader']
             },
             {
@@ -25,5 +32,15 @@ module.exports = {
                 loaders: ['style-loader', 'css-loader', 'less-loader']
             }
         ]
-    }
+    },
+    plugins: [
+        new StyleLintPlugin({
+            configFile: 'stylelint.config.js',
+            context: 'src',
+            files: '**/*.less',
+            failOnError: false,
+            quiet: false,
+            syntax: 'less'
+        }),
+    ],
 };

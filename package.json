@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --hot --inline",
     "start": "concurrently \"npm run api\" \"npm run dev\"",
-    "api": "json-server --watch db.json --port 3000"
+    "api": "json-server --watch db.json --port 3000",
+    "lint": "eslint src/app.js"
   },
   "keywords": [],
   "author": "Andrey Miskov",
@@ -19,10 +20,14 @@
     "babel-preset-env": "^1.6.1",
     "concurrently": "^3.4.0",
     "css-loader": "^0.28.1",
+    "eslint": "^4.16.0",
+    "eslint-loader": "^1.9.0",
     "json-server": "^0.10.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "style-loader": "^0.17.0",
+    "stylelint": "^8.4.0",
+    "stylelint-webpack-plugin": "^0.10.1",
     "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.5"
   },

@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 import CitySelector from './CitySelector';
 
 class App {
@@ -23,11 +23,11 @@ class App {
     }
 
     init() {
-        $("#createCitySelector").on("click", () => {
+        $('#createCitySelector').on('click', () => {
             this.createCitySelector();
         });
 
-        $("#destroyCitySelector").on("click", () => {
+        $('#destroyCitySelector').on('click', () => {
             this.destroyCitySelector();
         });
     }

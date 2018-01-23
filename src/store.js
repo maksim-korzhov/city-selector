@@ -1,10 +1,10 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 export default class Store {
     constructor() {
         // Set info nodes
-        this.regionNode =  $("#regionText");
-        this.localityNode =  $("#localityText");
+        this.regionNode =  $('#regionText');
+        this.localityNode =  $('#localityText');
     }
 
     setRegion(regionId) {

@@ -1,5 +1,5 @@
-import $ from "jquery";
-import Store from "../store";
+import $ from 'jquery';
+import Store from '../store';
 
 import './style.less';
 
@@ -14,7 +14,7 @@ export default class CitySelector {
         this.store = new Store(); // to store location data
 
         // Show block with region info
-        this.infoBlock = $("#info");
+        this.infoBlock = $('#info');
         this.infoBlock.show();
 
         // Set config options
@@ -31,11 +31,11 @@ export default class CitySelector {
 
     createRegionsSelector() {
         // Draw button
-        this.chooseRegionNode = $("<button>").attr("id", "chooseRegion").text("Выбрать регион");
+        this.chooseRegionNode = $('<button>').attr('id', 'chooseRegion').text('Выбрать регион');
         $(this.layoutElementNode).append(this.chooseRegionNode);
 
         // Get list of regions on click
-        this.chooseRegionNode.on("click", () => {
+        this.chooseRegionNode.on('click', () => {
             fetch(this.regionsUrl)
                 .then(response => {
                     response.json().then(data => {
@@ -44,7 +44,7 @@ export default class CitySelector {
                     });
                 })
                 .catch(() => {
-                    console.log("Не удалось получить список регионов");
+                    //console.log('Не удалось получить список регионов');
                 });
         });
     }
@@ -57,14 +57,14 @@ export default class CitySelector {
     }
 
     drawRegionsList(regions) {
-        this.chooseRegionListNode = $("<ul>").attr("id", "chooseRegionList");
+        this.chooseRegionListNode = $('<ul>').attr('id', 'chooseRegionList');
 
         regions.map(region => {
-            let item = $("<li>").attr("data-region", region.id).text(region.title);
+            const item = $('<li>').attr('data-region', region.id).text(region.title);
             this.chooseRegionListNode.append(item);
         });
 
-        this.chooseRegionListNode.on("click", "li", (e) => {
+        this.chooseRegionListNode.on('click', 'li', (e) => {
             const regionId = e.target.dataset.region;
 
             // Get data about region
@@ -82,12 +82,12 @@ export default class CitySelector {
                         this.lockButton();
 
                         // Highlight current region
-                        this.chooseRegionListNode.find(".active").removeClass("active");
-                        e.target.classList.add("active");
+                        this.chooseRegionListNode.find('.active').removeClass('active');
+                        e.target.classList.add('active');
                     });
                 })
                 .catch(() => {
-                    console.log("Не удалось получить список населённый пунктов");
+                    //console.log('Не удалось получить список населённый пунктов');
                 });
         });
 
@@ -102,19 +102,19 @@ export default class CitySelector {
     }
 
     drawLocalitiesList(localities) {
-        this.chooseLocalityListNode = $("<ul>").attr("id", "chooseLocalityList");
+        this.chooseLocalityListNode = $('<ul>').attr('id', 'chooseLocalityList');
 
         localities.list.map((locality, i) => {
-            let item = $("<li>").attr("data-loc", i).text(locality);
+            const item = $('<li>').attr('data-loc', i).text(locality);
             this.chooseLocalityListNode.append(item);
         });
 
-        this.chooseLocalityListNode.on("click", "li", (e) => {
+        this.chooseLocalityListNode.on('click', 'li', (e) => {
             this.store.setLocality(e.target.textContent);
 
             // Highlight current region
-            this.chooseLocalityListNode.find(".active").removeClass("active");
-            e.target.classList.add("active");
+            this.chooseLocalityListNode.find('.active').removeClass('active');
+            e.target.classList.add('active');
 
             this.unlockButton();
         });
@@ -133,19 +133,19 @@ export default class CitySelector {
     }
 
     drawSaveButton() {
-        this.saveButton = $("<button>").attr("id", "save").attr("disabled", "disabled").text("Сохранить");
+        this.saveButton = $('<button>').attr('id', 'save').attr('disabled', 'disabled').text('Сохранить');
         this.layoutElementNode.append(this.saveButton);
     }
 
     lockButton() {
         if(this.saveButton) {
-            this.saveButton.attr("disabled", "disabled");
+            this.saveButton.attr('disabled', 'disabled');
         }
     }
 
     unlockButton() {
         if(this.saveButton) {
-            this.saveButton.removeAttr("disabled");
+            this.saveButton.removeAttr('disabled');
         }
     }
 
@@ -157,6 +157,11 @@ export default class CitySelector {
     }
 
     destroy() {
+        // Delete info in store
+        this.store.deleteLocality();
+        this.store.deleteRegion();
+
+        // Delete layout
         this.destroySaveButton();
         this.destroyLocalitiesList();
         this.destroyRegionsList();
