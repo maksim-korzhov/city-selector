@@ -7,7 +7,7 @@ export default class Store {
         this.localityNode =  $("#localityText");
     }
 
-    saveRegion(regionId) {
+    setRegion(regionId) {
         this.regionNode.text(regionId);
         this.localityNode.text('');
     }
@@ -21,7 +21,7 @@ export default class Store {
         this.localityNode.text('');
     }
 
-    saveLocality(locality) {
+    setLocality(locality) {
         this.localityNode.text(locality);
     }
 

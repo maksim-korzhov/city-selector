@@ -64,7 +64,7 @@ export default class CitySelector {
             this.chooseRegionListNode.append(item);
         });
 
-        this.chooseRegionListNode.on("click", "li", function(e) {
+        this.chooseRegionListNode.on("click", "li", (e) => {
             const regionId = e.target.dataset.region;
 
             // Get data about region
@@ -76,13 +76,20 @@ export default class CitySelector {
                         this.drawLocalitiesList(data);
 
                         // Store region and delete old locality
-                        this.setRegion(regionId);
+                        this.store.setRegion(regionId);
+
+                        // Lock save button
+                        this.lockButton();
+
+                        // Highlight current region
+                        this.chooseRegionListNode.find(".active").removeClass("active");
+                        e.target.classList.add("active");
                     });
                 })
                 .catch(() => {
-                    console.log("Не удалось получить список регионов");
+                    console.log("Не удалось получить список населённый пунктов");
                 });
-        }.bind(this));
+        });
 
         this.layoutElementNode.append(this.chooseRegionListNode);
     }
@@ -94,17 +101,22 @@ export default class CitySelector {
         }
     }
 
-    setRegion(regionId) {
-        this.store.setProperty("region", regionId);
-        this.store.setProperty("locality", null);
-    }
-
     drawLocalitiesList(localities) {
         this.chooseLocalityListNode = $("<ul>").attr("id", "chooseLocalityList");
 
         localities.list.map((locality, i) => {
             let item = $("<li>").attr("data-loc", i).text(locality);
             this.chooseLocalityListNode.append(item);
+        });
+
+        this.chooseLocalityListNode.on("click", "li", (e) => {
+            this.store.setLocality(e.target.textContent);
+
+            // Highlight current region
+            this.chooseLocalityListNode.find(".active").removeClass("active");
+            e.target.classList.add("active");
+
+            this.unlockButton();
         });
 
         this.layoutElementNode.append(this.chooseLocalityListNode);
@@ -123,6 +135,18 @@ export default class CitySelector {
     drawSaveButton() {
         this.saveButton = $("<button>").attr("id", "save").attr("disabled", "disabled").text("Сохранить");
         this.layoutElementNode.append(this.saveButton);
+    }
+
+    lockButton() {
+        if(this.saveButton) {
+            this.saveButton.attr("disabled", "disabled");
+        }
+    }
+
+    unlockButton() {
+        if(this.saveButton) {
+            this.saveButton.removeAttr("disabled");
+        }
     }
 
     destroySaveButton() {
