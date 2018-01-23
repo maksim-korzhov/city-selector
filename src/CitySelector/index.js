@@ -1,23 +1,11 @@
 import $ from 'jquery';
 import Store from '../store';
+import SaveForm from "../SaveForm";
 
 import './style.less';
 
 export default class CitySelector {
     constructor(configObj) {
-        // Init props
-        this.chooseRegionNode = null;
-        this.chooseRegionListNode = null;
-        this.chooseLocalityListNode = null;
-        this.saveForm = null;
-        this.saveButton = null;
-
-        this.store = new Store(); // to store location data
-
-        // Show block with region info
-        this.infoBlock = $('#info');
-        this.infoBlock.show();
-
         // Set config options
         this.elementId = configObj.elementId;
         this.regionsUrl = configObj.regionsUrl;
@@ -25,6 +13,18 @@ export default class CitySelector {
         this.saveUrl = configObj.saveUrl;
 
         this.layoutElementNode = $(`#${this.elementId}`);
+
+        // Init props
+        this.chooseRegionNode = null;
+        this.chooseRegionListNode = null;
+        this.chooseLocalityListNode = null;
+        this.saveFormObj = new SaveForm(this.layoutElementNode);
+
+        this.store = new Store(); // to store location data
+
+        // Show block with region info
+        this.infoBlock = $('#info');
+        this.infoBlock.show();
 
         // Create button
         this.createRegionsSelector();
@@ -80,10 +80,10 @@ export default class CitySelector {
                         this.store.setRegion(regionId);
 
                         // Set data to send form
-                        this.setValueForSend();
+                        this.saveFormObj.setValueForSend();
 
                         // Lock save button
-                        this.lockButton();
+                        this.saveFormObj.lockButton();
 
                         // Highlight current region
                         this.chooseRegionListNode.find('.active').removeClass('active');
@@ -120,12 +120,12 @@ export default class CitySelector {
             this.chooseLocalityListNode.find('.active').removeClass('active');
             e.target.classList.add('active');
 
-            this.setValueForSend();
-            this.unlockButton();
+            this.saveFormObj.setValueForSend();
+            this.saveFormObj.unlockButton();
         });
 
         this.layoutElementNode.append(this.chooseLocalityListNode);
-        this.drawSaveForm();
+        this.saveFormObj.drawSaveForm(this.saveUrl);
     }
 
     destroyLocalitiesList() {
@@ -133,49 +133,8 @@ export default class CitySelector {
             this.chooseLocalityListNode.remove();
             this.chooseLocalityListNode = null;
 
-            this.destroySaveForm();
+            this.saveFormObj.destroySaveForm();
         }
-    }
-
-    drawSaveForm() {
-        this.saveForm = $('<form>').attr('id', 'saveForm').attr('method', 'post').attr('action', this.saveUrl);
-
-        // Combine data for server
-        const region = $('<input>').attr({ type: 'hidden', name: 'region'}).val(this.store.getRegion());
-        const locality = $('<input>').attr({ type: 'hidden', name: 'locality'}).val(this.store.getLocality());
-        this.saveForm.append(region);
-        this.saveForm.append(locality);
-
-        this.saveButton = $('<input>').attr({type: 'submit', id: 'save', disabled: 'disabled'}).val('Сохранить');
-        this.saveForm.append(this.saveButton);
-        this.layoutElementNode.append(this.saveForm);
-    }
-
-    lockButton() {
-        if(this.saveButton) {
-            this.saveButton.attr('disabled', 'disabled');
-        }
-    }
-
-    unlockButton() {
-        if(this.saveButton) {
-            this.saveButton.removeAttr('disabled');
-        }
-    }
-
-    destroySaveForm() {
-        if( this.saveForm ) {
-            this.saveButton.remove();
-            this.saveButton = null;
-
-            this.saveForm.remove();
-            this.saveForm = null;
-        }
-    }
-
-    setValueForSend() {
-        this.saveForm.find('input[name="region"]').val(this.store.getRegion());
-        this.saveForm.find('input[name="locality"]').val(this.store.getLocality());
     }
 
     destroy() {
@@ -184,7 +143,7 @@ export default class CitySelector {
         this.store.deleteRegion();
 
         // Delete layout
-        this.destroySaveButton();
+        this.saveFormObj.destroySaveForm();
         this.destroyLocalitiesList();
         this.destroyRegionsList();
         this.destroyRegionsSelector();

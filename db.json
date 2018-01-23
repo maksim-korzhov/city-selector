@@ -45,13 +45,5 @@
     }
   ],
   "selectedRegions": [
-    {
-      "id": 1
-    },
-    {
-      "region": "61",
-      "locality": "Шахты",
-      "id": 2
-    }
   ]
 }
