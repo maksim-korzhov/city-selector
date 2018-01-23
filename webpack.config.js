@@ -11,12 +11,12 @@ module.exports = {
     },
     module: {
         loaders: [
-            // {
-            //     test: /\.js$/,
-            //     exclude: /node_modules/,
-            //     enforce: 'pre',
-            //     loaders: ['eslint-loader']
-            // },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                enforce: 'pre',
+                loaders: ['eslint-loader']
+            },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,

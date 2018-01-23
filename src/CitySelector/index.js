@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Store from '../store';
-import SaveForm from "../SaveForm";
-import LocalityList from "../LocalityList";
-import RegionsList from "../RegionsList";
+import SaveForm from '../SaveForm';
+import LocalityList from '../LocalityList';
+import RegionsList from '../RegionsList';
 
 import './style.less';
 

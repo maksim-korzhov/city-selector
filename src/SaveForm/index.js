@@ -13,7 +13,7 @@ export default class SaveForm {
     }
 
     drawSaveForm(saveUrl) {
-        this.saveFormNode = $('<form>').attr('id', 'saveForm').attr('method', 'post').attr('action', saveUrl);
+        this.saveFormNode = $('<form>').attr({ id: 'saveForm', class: 'saveForm', method: 'post', action: saveUrl});
 
         // Combine data for server
         const region = $('<input>').attr({ type: 'hidden', name: 'region'}).val(this.store.getRegion());
