@@ -9,6 +9,7 @@ export default class CitySelector {
         this.chooseRegionNode = null;
         this.chooseRegionListNode = null;
         this.chooseLocalityListNode = null;
+        this.saveForm = null;
         this.saveButton = null;
 
         this.store = new Store(); // to store location data
@@ -78,6 +79,9 @@ export default class CitySelector {
                         // Store region and delete old locality
                         this.store.setRegion(regionId);
 
+                        // Set data to send form
+                        this.setValueForSend();
+
                         // Lock save button
                         this.lockButton();
 
@@ -116,11 +120,12 @@ export default class CitySelector {
             this.chooseLocalityListNode.find('.active').removeClass('active');
             e.target.classList.add('active');
 
+            this.setValueForSend();
             this.unlockButton();
         });
 
         this.layoutElementNode.append(this.chooseLocalityListNode);
-        this.drawSaveButton();
+        this.drawSaveForm();
     }
 
     destroyLocalitiesList() {
@@ -128,13 +133,22 @@ export default class CitySelector {
             this.chooseLocalityListNode.remove();
             this.chooseLocalityListNode = null;
 
-            this.destroySaveButton();
+            this.destroySaveForm();
         }
     }
 
-    drawSaveButton() {
-        this.saveButton = $('<button>').attr('id', 'save').attr('disabled', 'disabled').text('Сохранить');
-        this.layoutElementNode.append(this.saveButton);
+    drawSaveForm() {
+        this.saveForm = $('<form>').attr('id', 'saveForm').attr('method', 'post').attr('action', this.saveUrl);
+
+        // Combine data for server
+        const region = $('<input>').attr({ type: 'hidden', name: 'region'}).val(this.store.getRegion());
+        const locality = $('<input>').attr({ type: 'hidden', name: 'locality'}).val(this.store.getLocality());
+        this.saveForm.append(region);
+        this.saveForm.append(locality);
+
+        this.saveButton = $('<input>').attr({type: 'submit', id: 'save', disabled: 'disabled'}).val('Сохранить');
+        this.saveForm.append(this.saveButton);
+        this.layoutElementNode.append(this.saveForm);
     }
 
     lockButton() {
@@ -149,11 +163,19 @@ export default class CitySelector {
         }
     }
 
-    destroySaveButton() {
-        if( this.saveButton ) {
+    destroySaveForm() {
+        if( this.saveForm ) {
             this.saveButton.remove();
             this.saveButton = null;
+
+            this.saveForm.remove();
+            this.saveForm = null;
         }
+    }
+
+    setValueForSend() {
+        this.saveForm.find('input[name="region"]').val(this.store.getRegion());
+        this.saveForm.find('input[name="locality"]').val(this.store.getLocality());
     }
 
     destroy() {
