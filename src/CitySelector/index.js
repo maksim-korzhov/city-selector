@@ -1,2 +1,8 @@
-require('./style.less');
-// Your code...
+import './style.less';
+
+export default class CitySelector {
+    constructor(configObj)
+    {
+        console.log(configObj);
+    }
+}
