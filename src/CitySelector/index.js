@@ -64,7 +64,7 @@ export default class CitySelector {
             this.chooseRegionListNode.append(item);
         });
 
-        this.chooseRegionListNode.on("click", "li", (e) => {
+        this.chooseRegionListNode.on("click", "li", function(e) {
             const regionId = e.target.dataset.region;
 
             // Get data about region
@@ -74,13 +74,15 @@ export default class CitySelector {
                         // Delete old nodes with localities
                         this.destroyLocalitiesList();
                         this.drawLocalitiesList(data);
+
+                        // Store region and delete old locality
                         this.setRegion(regionId);
                     });
                 })
                 .catch(() => {
                     console.log("Не удалось получить список регионов");
                 });
-        });
+        }.bind(this));
 
         this.layoutElementNode.append(this.chooseRegionListNode);
     }
@@ -93,7 +95,8 @@ export default class CitySelector {
     }
 
     setRegion(regionId) {
-
+        this.store.setProperty("region", regionId);
+        this.store.setProperty("locality", null);
     }
 
     drawLocalitiesList(localities) {
@@ -112,6 +115,8 @@ export default class CitySelector {
         if( this.chooseLocalityListNode ) {
             this.chooseLocalityListNode.remove();
             this.chooseLocalityListNode = null;
+
+            this.destroySaveButton();
         }
     }
 

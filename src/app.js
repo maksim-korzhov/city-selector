@@ -16,8 +16,10 @@ class App {
     }
 
     destroyCitySelector() {
-        this.citySelector.destroy();
-        this.citySelector = null;
+        if(this.citySelector) {
+            this.citySelector.destroy();
+            this.citySelector = null;
+        }
     }
 
     init() {

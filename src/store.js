@@ -1,30 +1,35 @@
+import $ from "jquery";
+
 export default class Store {
-    constructor(){
-        if(! Store.instance){
-            this._state = {};
-            Store.instance = this;
-        }
-
-        return Store.instance;
+    constructor() {
+        // Set info nodes
+        this.regionNode =  $("#regionText");
+        this.localityNode =  $("#localityText");
     }
 
-    getState() {
-        return this._state;
+    saveRegion(regionId) {
+        this.regionNode.text(regionId);
+        this.localityNode.text('');
     }
 
-    setState(newState) {
-        this._state = newState;
+    getRegion() {
+        return this.regionNode.text();
     }
 
-    setProperty(propertyName, propertyValue) {
-        this._state[propertyName] = propertyValue;
+    deleteRegion() {
+        this.regionNode.text('');
+        this.localityNode.text('');
     }
 
-    getProperty(propertyName) {
-        if(this._state.hasOwnProperty(propertyName)) {
-            return propertyName;
-        }
+    saveLocality(locality) {
+        this.localityNode.text(locality);
+    }
 
-        return null;
+    getLocality() {
+        return this.localityNode.text();
+    }
+
+    deleteLocality() {
+        this.localityNode.text('');
     }
 }
