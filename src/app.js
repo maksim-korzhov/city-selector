@@ -25,7 +25,6 @@ class App {
     init() {
         $('#createCitySelector').on('click', () => {
             this.createCitySelector();
-            this.createCitySelector();
         });
 
         $('#destroyCitySelector').on('click', () => {
