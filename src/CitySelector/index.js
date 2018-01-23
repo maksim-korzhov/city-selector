@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import Store from '../store';
 import SaveForm from "../SaveForm";
+import LocalityList from "../LocalityList";
+import RegionsList from "../RegionsList";
 
 import './style.less';
 
@@ -18,7 +20,21 @@ export default class CitySelector {
         this.chooseRegionNode = null;
         this.chooseRegionListNode = null;
         this.chooseLocalityListNode = null;
+
         this.saveFormObj = new SaveForm(this.layoutElementNode);
+        this.localityListObj = new LocalityList({
+            saveFormObj: this.saveFormObj,
+            saveUrl: this.saveUrl,
+            chooseLocalityListNode: this.chooseLocalityListNode,
+            layoutElementNode: this.layoutElementNode
+        });
+        this.regionsList = new RegionsList({
+            chooseRegionListNode: this.chooseRegionListNode,
+            localitiesUrl: this.localitiesUrl,
+            localityListObj: this.localityListObj,
+            saveFormObj: this.saveFormObj,
+            layoutElementNode: this.layoutElementNode
+        });
 
         this.store = new Store(); // to store location data
 
@@ -41,11 +57,8 @@ export default class CitySelector {
                 .then(response => {
                     response.json().then(data => {
                         this.destroyRegionsSelector();
-                        this.drawRegionsList(data);
+                        this.regionsList.drawRegionsList(data);
                     });
-                })
-                .catch(() => {
-                    //console.log('Не удалось получить список регионов');
                 });
         });
     }
@@ -57,86 +70,6 @@ export default class CitySelector {
         }
     }
 
-    drawRegionsList(regions) {
-        this.chooseRegionListNode = $('<ul>').attr('id', 'chooseRegionList');
-
-        regions.map(region => {
-            const item = $('<li>').attr('data-region', region.id).text(region.title);
-            this.chooseRegionListNode.append(item);
-        });
-
-        this.chooseRegionListNode.on('click', 'li', (e) => {
-            const regionId = e.target.dataset.region;
-
-            // Get data about region
-            fetch(`${this.localitiesUrl}/${regionId}`)
-                .then(response => {
-                    response.json().then(data => {
-                        // Delete old nodes with localities
-                        this.destroyLocalitiesList();
-                        this.drawLocalitiesList(data);
-
-                        // Store region and delete old locality
-                        this.store.setRegion(regionId);
-
-                        // Set data to send form
-                        this.saveFormObj.setValueForSend();
-
-                        // Lock save button
-                        this.saveFormObj.lockButton();
-
-                        // Highlight current region
-                        this.chooseRegionListNode.find('.active').removeClass('active');
-                        e.target.classList.add('active');
-                    });
-                })
-                .catch(() => {
-                    //console.log('Не удалось получить список населённый пунктов');
-                });
-        });
-
-        this.layoutElementNode.append(this.chooseRegionListNode);
-    }
-
-    destroyRegionsList() {
-        if( this.chooseRegionListNode ) {
-            this.chooseRegionListNode.remove();
-            this.chooseRegionListNode = null;
-        }
-    }
-
-    drawLocalitiesList(localities) {
-        this.chooseLocalityListNode = $('<ul>').attr('id', 'chooseLocalityList');
-
-        localities.list.map((locality, i) => {
-            const item = $('<li>').attr('data-loc', i).text(locality);
-            this.chooseLocalityListNode.append(item);
-        });
-
-        this.chooseLocalityListNode.on('click', 'li', (e) => {
-            this.store.setLocality(e.target.textContent);
-
-            // Highlight current region
-            this.chooseLocalityListNode.find('.active').removeClass('active');
-            e.target.classList.add('active');
-
-            this.saveFormObj.setValueForSend();
-            this.saveFormObj.unlockButton();
-        });
-
-        this.layoutElementNode.append(this.chooseLocalityListNode);
-        this.saveFormObj.drawSaveForm(this.saveUrl);
-    }
-
-    destroyLocalitiesList() {
-        if( this.chooseLocalityListNode ) {
-            this.chooseLocalityListNode.remove();
-            this.chooseLocalityListNode = null;
-
-            this.saveFormObj.destroySaveForm();
-        }
-    }
-
     destroy() {
         // Delete info in store
         this.store.deleteLocality();
@@ -144,8 +77,8 @@ export default class CitySelector {
 
         // Delete layout
         this.saveFormObj.destroySaveForm();
-        this.destroyLocalitiesList();
-        this.destroyRegionsList();
+        this.localityListObj.destroyLocalitiesList();
+        this.regionsList.destroyRegionsList();
         this.destroyRegionsSelector();
 
         // Hide block with region info
