@@ -13,7 +13,7 @@ export default class RegionsList {
     }
 
     drawRegionsList(regions) {
-        this.chooseRegionListNode = $('<ul>').attr('id', 'chooseRegionList');
+        this.chooseRegionListNode = $('<ul>').attr('class', 'chooseRegionList');
 
         regions.map(region => {
             const item = $('<li>').attr('data-region', region.id).text(region.title);
@@ -29,7 +29,7 @@ export default class RegionsList {
                     response.json().then(data => {
                         // Delete old nodes with localities
                         this.localityListObj.destroyLocalitiesList();
-                        this.localityListObj.drawLocalitiesList(data);
+                        this.localityListObj.drawLocalitiesList(data, regionId);
 
                         // Store region and delete old locality
                         this.store.setRegion(regionId);

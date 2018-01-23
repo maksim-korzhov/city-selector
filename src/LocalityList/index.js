@@ -10,8 +10,8 @@ export default class LocalityList {
         this.layoutElementNode = configObj.layoutElementNode;
     }
 
-    drawLocalitiesList(localities) {
-        this.chooseLocalityListNode = $('<ul>').attr('id', 'chooseLocalityList');
+    drawLocalitiesList(localities, regionId) {
+        this.chooseLocalityListNode = $('<ul>').attr('class', 'chooseLocalityList');
 
         localities.list.map((locality, i) => {
             const item = $('<li>').attr('data-loc', i).text(locality);
@@ -19,6 +19,7 @@ export default class LocalityList {
         });
 
         this.chooseLocalityListNode.on('click', 'li', (e) => {
+            this.store.setRegion(regionId);
             this.store.setLocality(e.target.textContent);
 
             // Highlight current region

@@ -16,6 +16,11 @@ export default class CitySelector {
 
         this.layoutElementNode = $(`#${this.elementId}`);
 
+        if( this.layoutElementNode.length === 0 ) {
+            this.layoutElementNode  = $('<div>').attr({ id: this.elementId, class: 'citySelector' });
+            $('#citySelector').append(this.layoutElementNode);
+        }
+
         // Init props
         this.chooseRegionNode = null;
         this.chooseRegionListNode = null;
@@ -48,7 +53,7 @@ export default class CitySelector {
 
     createRegionsSelector() {
         // Draw button
-        this.chooseRegionNode = $('<button>').attr('id', 'chooseRegion').text('Выбрать регион');
+        this.chooseRegionNode = $('<button>').attr('class', 'chooseRegion').text('Выбрать регион');
         $(this.layoutElementNode).append(this.chooseRegionNode);
 
         // Get list of regions on click
@@ -71,17 +76,15 @@ export default class CitySelector {
     }
 
     destroy() {
-        // Delete info in store
-        this.store.deleteLocality();
-        this.store.deleteRegion();
-
-        // Delete layout
         this.saveFormObj.destroySaveForm();
         this.localityListObj.destroyLocalitiesList();
         this.regionsList.destroyRegionsList();
         this.destroyRegionsSelector();
 
-        // Hide block with region info
-        this.infoBlock.hide();
+        // Destroy city selector
+        if( this.layoutElementNode ) {
+            this.layoutElementNode.remove();
+            this.layoutElementNode = null;
+        }
     }
 }

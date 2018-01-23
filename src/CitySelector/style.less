@@ -2,16 +2,31 @@
     float: right;
 }
 
-#chooseRegionList,
-#chooseLocalityList {
+.citySelector {
+    padding: 20px;
+}
+
+.citySelector + .citySelector {
+    border-top: 1px solid #ccc;
+}
+
+.citySelector:after {
+    content: '';
+    clear: both;
+    display: table;
+    width: 100%;
+}
+
+.chooseRegionList,
+.chooseLocalityList {
     list-style: none;
     float: left;
     padding: 0 10px;
     width: 30%;
 }
 
-#chooseRegionList li,
-#chooseLocalityList li {
+.chooseRegionList li,
+.chooseLocalityList li {
     cursor: pointer;
     padding: 6px 10px;
 }
