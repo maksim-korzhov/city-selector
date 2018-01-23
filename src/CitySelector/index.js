@@ -64,6 +64,9 @@ export default class CitySelector {
                         this.destroyRegionsSelector();
                         this.regionsList.drawRegionsList(data);
                     });
+                })
+                .catch(() => {
+                    // show error message
                 });
         });
     }

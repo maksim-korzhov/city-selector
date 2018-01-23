@@ -44,6 +44,9 @@ export default class RegionsList {
                         this.chooseRegionListNode.find('.active').removeClass('active');
                         e.target.classList.add('active');
                     });
+                })
+                .catch(() => {
+                    // error message
                 });
         });
 
